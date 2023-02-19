@@ -15,9 +15,9 @@ const db = knex({
     connection: {
       host : 'dpg-cfo7s682i3mo4brs6580-a',
       port : 5432,
-      user : 'face_recogtion_app_user',
-      password : 'hUpaBEgEBmJ4pG9XY1O5d8Hlc8H60ZDu',
-      database : 'face_recogtion_app'
+      user : 'macbookpro',
+      password : '',
+      database : 'smart-brain'
     }
 });
 
