@@ -1,6 +1,6 @@
 databases:
   - name: face-recogtion-app
-    databaseName: face_recogtion_app
+    databaseName: face-recogtion-app
     user: face_recogtion_app_user
 
  services:
@@ -10,9 +10,9 @@ databases:
    plan: standard
    repo: https://github.com/render-oss/docker-pgbouncer
    envVars:
-   - key: postgres://face_recogtion_app_user:hUpaBEgEBmJ4pG9XY1O5d8Hlc8H60ZDu@dpg-cfo7s682i3mo4brs6580-a/face_recogtion_app
+   - key: postgres://face_recogtion_app_user:hUpaBEgEBmJ4pG9XY1O5d8Hlc8H60ZDu@dpg-cfo7s682i3mo4brs6580-a.oregon-postgres.render.com/face_recogtion_app
      fromDatabase:
-       name: face_recogtion_app
+       name: face-recogtion-app
        property: connectionString
    - key: POOL_MODE
      value: transaction
