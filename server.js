@@ -14,7 +14,9 @@ const db = knex({
     client: 'pg',
     connection: {
       host: process.env.DATABASE_URL,
+      port: 5432,
       ssl:true,
+
     }
 });
 
