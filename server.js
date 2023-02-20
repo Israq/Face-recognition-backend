@@ -9,13 +9,16 @@ const signin = require('./controllers/signin');
 const profile = require('./controllers/profile')
 const image = require('./controllers/image');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0; 
+ 
 const db = knex({
     client: 'pg',
     connection: {
-      host: process.env.DATABASE_URL,
-      port: 5432,
-      ssl:true,
+      host: 'dpg-cfpidsqrrk0fd9tpo360-a',
+      user: 'face_recogtion_app_zewr_user',
+      password: '',
+      database: 'face_recogtion_app_zewr'
+
+
 
     }
 });
@@ -27,7 +30,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req,res) => { res.send('It is') })
+app.get('/', (req,res) => { res.send('It is working') })
 app.post('/signin', signin.handleSignin( db, bcrypt))
 app.post('/register', (req, res) => {register.handleRegister(req, res, db, bcrypt)})
 app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db)})    
