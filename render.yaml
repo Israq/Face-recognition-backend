@@ -12,7 +12,7 @@ databases:
    envVars:
    - key: postgres://face_recogtion_app_user:hUpaBEgEBmJ4pG9XY1O5d8Hlc8H60ZDu@dpg-cfo7s682i3mo4brs6580-a/face_recogtion_app
      fromDatabase:
-       name: mysite
+       name: face_recogtion_app
        property: connectionString
    - key: POOL_MODE
      value: transaction
