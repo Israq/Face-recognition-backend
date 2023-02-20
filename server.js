@@ -13,11 +13,8 @@ const image = require('./controllers/image');
 const db = knex({
     client: 'pg',
     connection: {
-      host : 'dpg-cfo7s682i3mo4brs6580-a',
-      port : 5432,
-      user : 'macbookpro',
-      password : '',
-      database : 'smart-brain'
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
     }
 });
 
@@ -28,7 +25,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req,res) => { res.send('It is Working') })
+app.get('/', (req,res) => { res.send('It is working') })
 app.post('/signin', signin.handleSignin( db, bcrypt))
 app.post('/register', (req, res) => {register.handleRegister(req, res, db, bcrypt)})
 app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db)})    
