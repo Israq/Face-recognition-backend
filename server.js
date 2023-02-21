@@ -13,7 +13,7 @@ const image = require('./controllers/image');
 const db = knex({
     client: 'pg',
     connection: {
-      url: process.env.POSTGRESQL_INERNAL_URL,
+      url: process.env.POSTGRESQL_INTERNAL_URL,
       Database: "face_recogtion_app_zewr",
       ssl: true,
 
