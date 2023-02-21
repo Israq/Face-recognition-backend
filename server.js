@@ -14,6 +14,11 @@ const db = knex({
     client: 'pg',
     connection: {
       connectionString: process.env.DATABASE_URL,
+      Hostname: dpg-cfpidsqrrk0fd9tpo360-a,
+      Database: face_recogtion_app_zewr,
+      DATABASE_URL:"postgres://face_recogtion_app_zewr_user:KfKXjp3Uy8VJHqtXJktCY3CJIocmn70B@dpg-cfpidsqrrk0fd9tpo360-a/face_recogtion_app_zewr",
+      Username: face_recogtion_app_zewr_user,
+      password:KfKXjp3Uy8VJHqtXJktCY3CJIocmn70B,
       ssl: true,
 
 
