@@ -91,10 +91,7 @@ Step 5: Click Detect
 
 First the rank will show 0. After using the App the rank will update.
 
-
-
-
-
+![Untitled (2)](https://user-images.githubusercontent.com/35467653/233374866-bdf6f224-764a-46f7-8711-cef53b20ef3b.gif)
 
 
 ## 🔗 Links
