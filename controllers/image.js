@@ -1,70 +1,52 @@
-const {ClarifaiStub, grpc} = require("clarifai-nodejs-grpc");
-
-const stub = ClarifaiStub.grpc();
-
-const metadata = new grpc.Metadata();
-metadata.set("authorization", "Key 5e66c11d847948d1b9c5dd90e6a2b4f2");
-
-// const Clarifai = require('Clarifai');
-// const app = new Clarifai.App({
-//     apiKey: '5e66c11d847948d1b9c5dd90e6a2b4f2'
-//    });
 const handleApiCall = (req, res) => {
-   stub.PostModelOutputs(
-        {
-            // This is the model ID of a publicly available General model. You may use any other public or custom model ID.
-            model_id: 'a403429f2ddf4b49b307e318f00e528b',
-            version_id: '34ce21a40cc24b6b96ffee54aabff139',
-            inputs: [{data: {image: {url: req.body.input}}}]
-        },
-        metadata,
-        (err, response) => {
-            if (err) {
-                console.log("Error: " + err);
-                return;
-            }
+  const PAT = "92df0e4f1578415c934b8e635fa36a01";
+  const USER_ID = "clarifai";
+  const APP_ID = "main";
+  const MODEL_ID = "face-detection";
+  const IMAGE_URL = req.body.input;
 
-            if (response.status.code !== 10000) {
-                console.log("Received failed status: " + response.status.description + "\n" + response.status.details);
-                return;
-            }
+  const raw = JSON.stringify({
+    user_app_id: { user_id: USER_ID, app_id: APP_ID },
+    inputs: [{ data: { image: { url: IMAGE_URL } } }],
+  });
 
-            console.log("Predicted concepts, with confidence values:")
-            for (const c of response.outputs[0].data.concepts) {
-                console.log(c.name + ": " + c.value);
-            }
-            res.json(response)
-            }
-    );
-}
-
-
-//    app.models
-//    .predict(
-//      {
-//        id: 'face-detection',
-//        name: 'face-detection',
-//        version: '6dc7e46bc9124c5c8824be4822abe105',
-//        type: 'visual-detector',
-//      }, req.body.input)
-//      .then(data => {
-//         res.json(data);
-//      })
-//      .catch(err => res.status(400).json('Unable to Work with API'))
-
+  fetch(`https://api.clarifai.com/v2/models/${MODEL_ID}/outputs`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: "Key " + PAT,
+      "Content-Type": "application/json",
+    },
+    body: raw,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log("API Error:", err);
+      res.status(400).json("Unable to Work with API");
+    });
+};
 
 const handleImage = (req, res, db) => {
-    const { id } = req.body;
-    db('users').where('id', '=', id)
-        .increment('entries', 1)
-        .returning('entries')
-        .then(entries => {
-            res.json(entries[0].entries);
-        })
-        .catch(err => res.status(400).json('Unable to Get Entries'))
-    }
+  console.log("handleImage called with body:", req.body);
+  const { id } = req.body;
+  db("users")
+    .where("id", "=", id)
+    .increment("entries", 1)
+    .returning("entries")
+    .then((entries) => {
+      console.log("Image update success:", entries);
+      res.json(entries[0].entries);
+    })
+    .catch((err) => {
+      console.log("Image error:", err);
+      res.status(400).json("Unable to Get Entries");
+    });
+};
 
-    module.exports = {
-        handleImage,
-        handleApiCall
-    }
+module.exports = {
+  handleImage,
+  handleApiCall,
+};

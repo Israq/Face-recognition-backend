@@ -43,6 +43,14 @@ app.post("/imageurl", (req, res) => {
 });
 
 app.get("/setup", setup.setupTables(db));
+app.get("/add-entries", (req, res) => {
+  db.raw("ALTER TABLE users ADD COLUMN IF NOT EXISTS entries INTEGER DEFAULT 0")
+    .then(() => res.json("Column added"))
+    .catch((err) => {
+      console.log("Error:", err);
+      res.status(400).json("Failed");
+    });
+});
 app.listen(process.env.PORT || 3000, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });
