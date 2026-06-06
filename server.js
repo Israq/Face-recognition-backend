@@ -51,6 +51,18 @@ app.get("/add-entries", (req, res) => {
       res.status(400).json("Failed");
     });
 });
+app.get("/proxy-image", async (req, res) => {
+  try {
+    const fetch = (await import("node-fetch")).default;
+    const imageUrl = req.query.url;
+    const response = await fetch(imageUrl);
+    const buffer = await response.buffer();
+    res.set("Content-Type", response.headers.get("content-type"));
+    res.send(buffer);
+  } catch (err) {
+    res.status(400).json("Failed to fetch image");
+  }
+});
 app.listen(process.env.PORT || 3000, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });
