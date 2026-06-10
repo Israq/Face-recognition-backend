@@ -17,7 +17,7 @@ const db = knex({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   },
-  pool: { min: 0, max: 2 },
+  pool: { min: 0, max: 3 },
 });
 
 const app = express();
