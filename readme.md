@@ -1,60 +1,121 @@
-# Artificial Intelligence Based Face Recognition App (Backend)
+# Face Recognition API (Backend)
 
-A Full Stack AI-based Face Recognition app. Users can upload any royalty-free image from the internet and the app will identify and locate human faces in the image — all running locally in the browser with no external API costs.
+REST API for an AI-powered face detection application. Handles user authentication, entry tracking, and secure image proxying.
 
 ---
 
-## What the App Does
+## Features
 
-1. Register new user.
-2. Track user rank based on how many times the app has been used.
-3. Authenticate user during login and restore rank.
-4. Upload image link from the internet (royalty-free).
-5. Identify human face position in the image using **face-api.js** (runs in-browser, no API keys, no limits).
-6. Update the user's rank after each detection.
+- **JWT Authentication** — Persistent login with token-based auth
+- **User Management** — Register, signin, profile retrieval
+- **Entry Tracking** — One count per unique image to prevent duplicates
+- **Image Proxy** — Fetches external images server-side to bypass CORS
+- **PostgreSQL** — Relational database with transaction support
+- **Docker Support** — Containerized deployment ready
 
 ---
 
 ## Tech Stack
 
-| Category | Technologies |
-|----------|-------------|
-| **Frontend** | React, HTML5, CSS3, Tachyons, face-api.js |
-| **Backend** | Node.js, Express |
-| **Database** | PostgreSQL |
-| **AI/ML** | face-api.js (TensorFlow.js-based, runs in browser) |
-| **Tools** | Git, Postman, RESTful API |
+| Category  | Technology              |
+| --------- | ----------------------- |
+| Runtime   | Node.js 22              |
+| Framework | Express.js              |
+| Database  | PostgreSQL              |
+| Auth      | JWT + bcrypt            |
+| Container | Docker + Docker Compose |
 
 ---
 
-## Why face-api.js Over Clarifai?
+## Quick Start
 
-| Feature | Clarifai | face-api.js |
-|---------|----------|-------------|
-| **Cost** | Paid after free credits | Completely free |
-| **API Key** | Required | Not needed |
-| **Limits** | Credit-based | Unlimited |
-| **Processing** | Server-side (API call) | Client-side (browser) |
-| **Privacy** | Image sent to external server | Image stays on user's device |
-| **Offline** | No | Yes (after initial model download) |
-
----
-
-## Prerequisites
-
-- Node.js (v16 or higher, recommended v22)
-- PostgreSQL database (local or cloud)
-- Modern browser (Chrome/Firefox/Edge)
-
----
-
-## Run Locally
-
-### 1. Clone and Run the Frontend
+### Docker (Recommended)
 
 ```bash
-git clone https://github.com/Israq/Face-recontion-front-end.git
-cd Face-recontion-front-end
+docker-compose up -d
+```
+
+### Manual
+
+```bash
+git clone https://github.com/Israq/Face-recognition-backend.git
+cd Face-recognition-backend
 npm install
-npm install face-api.js
-npm start
+# Create .env with DATABASE_URL and PORT=3001
+node server.js
+```
+
+---
+
+## Environment Variables
+
+```
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+PORT=3001
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint            | Description                        |
+| ------ | ------------------- | ---------------------------------- |
+| POST   | `/signin`           | Authenticate user, returns JWT     |
+| POST   | `/register`         | Create new account                 |
+| GET    | `/verify-token`     | Validate JWT, return user          |
+| GET    | `/profile/:id`      | Get user profile                   |
+| PUT    | `/image`            | Increment entry count              |
+| GET    | `/proxy-image?url=` | Fetch external image (CORS bypass) |
+| GET    | `/setup`            | Create database tables             |
+| GET    | `/add-entries`      | Add entries column                 |
+
+---
+
+## Project Structure
+
+```
+├── controllers/
+│   ├── signin.js        # JWT authentication
+│   ├── register.js      # User registration
+│   ├── image.js         # Entry count update
+│   ├── profile.js       # User profile
+│   └── setup.js         # Database table creation
+├── server.js            # Express server entry point
+├── Dockerfile
+├── .node-version
+└── package.json
+```
+
+---
+
+## Deployment (Render)
+
+| Config        | Value                  |
+| ------------- | ---------------------- |
+| Runtime       | Node                   |
+| Build Command | `yarn`                 |
+| Start Command | `node server.js`       |
+| Node Version  | 22                     |
+| Environment   | `DATABASE_URL`, `PORT` |
+
+---
+
+## Troubleshooting
+
+| Issue                     | Solution                                                          |
+| ------------------------- | ----------------------------------------------------------------- |
+| Register fails            | Use a new email; duplicate key means email exists                 |
+| Database connection error | Use external URL locally, internal URL on Render                  |
+| Pool timeout              | Added `pool: { min: 0, max: 3 }` in knex config                   |
+| Port already in use       | Stop other Node processes or change PORT in .env                  |
+| SSL error                 | Use `ssl: { rejectUnauthorized: false }` for external connections |
+
+---
+
+## Author
+
+**Syed Ragib Israq**
+
+- [GitHub](https://github.com/Israq)
+- [LinkedIn](https://www.linkedin.com/in/syed-ragib-israq-profile/)
+- [Portfolio](https://israq-portfolio.onrender.com/)
