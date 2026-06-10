@@ -63,6 +63,20 @@ app.get("/proxy-image", async (req, res) => {
     res.status(400).json("Failed to fetch image");
   }
 });
+app.get("/verify-token", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json("No token");
+
+  const jwt = require("jsonwebtoken");
+  jwt.verify(token, "your-secret-key", (err, decoded) => {
+    if (err) return res.status(401).json("Invalid token");
+    db.select("*")
+      .from("users")
+      .where("id", "=", decoded.id)
+      .then((user) => res.json(user[0]))
+      .catch(() => res.status(400).json("User not found"));
+  });
+});
 app.listen(process.env.PORT || 3000, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });

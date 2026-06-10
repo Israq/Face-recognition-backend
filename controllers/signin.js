@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const handleSignin = (db, bcrypt) => (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -14,7 +16,12 @@ const handleSignin = (db, bcrypt) => (req, res) => {
           .from("users")
           .where("email", "=", email)
           .then((user) => {
-            res.json(user[0]);
+            const token = jwt.sign(
+              { id: user[0].id, email: user[0].email },
+              "your-secret-key",
+              { expiresIn: "7d" },
+            );
+            res.json({ ...user[0], token });
           })
           .catch((err) => {
             console.log("Signin error:", err);
@@ -26,6 +33,7 @@ const handleSignin = (db, bcrypt) => (req, res) => {
     })
     .catch((err) => res.status(400).json("Wrong credentials"));
 };
+
 module.exports = {
   handleSignin: handleSignin,
 };
