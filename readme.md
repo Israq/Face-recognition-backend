@@ -1,41 +1,62 @@
-# Face Recognition API (Backend)
+# Face Recognition App
 
-REST API for an AI-powered face detection application. Handles user authentication, entry tracking, and secure image proxying.
+Full-stack AI-powered face detection application. Detects multiple faces with confidence scores, all running in the browser with zero API costs. Features JWT authentication, guest mode, smart entry tracking, and Docker containerization.
 
 ---
 
 ## Features
 
-- **JWT Authentication** — Persistent login with token-based auth
-- **User Management** — Register, signin, profile retrieval
-- **Entry Tracking** — One count per unique image to prevent duplicates
-- **Image Proxy** — Fetches external images server-side to bypass CORS
-- **PostgreSQL** — Relational database with transaction support
-- **Docker Support** — Containerized deployment ready
+- **In-Browser AI** — Face detection via face-api.js (TensorFlow.js), no external APIs
+- **Multi-Face Detection** — Detects multiple faces with confidence percentages
+- **JWT Authentication** — Persistent login across sessions and page refreshes
+- **Guest Mode** — One-click demo access for recruiters, no registration needed
+- **Smart Entry Counting** — One count per unique image, no duplicates
+- **Try Demo** — Pre-loaded demo image for instant testing
+- **Error Handling** — Clear messages for invalid URLs, wrong passwords, no faces detected
+- **Mobile Optimized** — Heavy animations disabled on mobile for smooth performance
+- **Docker + Nginx** — Production-ready containerized deployment
+- **Responsive UI** — Tachyons CSS framework
 
 ---
 
 ## Tech Stack
 
-| Category  | Technology              |
-| --------- | ----------------------- |
-| Runtime   | Node.js 22              |
-| Framework | Express.js              |
-| Database  | PostgreSQL              |
-| Auth      | JWT + bcrypt            |
-| Container | Docker + Docker Compose |
+| Layer        | Technologies                               |
+| ------------ | ------------------------------------------ |
+| **Frontend** | React, Tachyons CSS, face-api.js           |
+| **Backend**  | Node.js, Express, JWT, bcrypt              |
+| **Database** | Supabase (PostgreSQL)                      |
+| **AI/ML**    | face-api.js (TensorFlow.js, browser-based) |
+| **DevOps**   | Docker, Docker Compose, nginx              |
+| **Cloud**    | Render (deployment)                        |
+
+---
+
+## Why face-api.js?
+
+|                | Clarifai (old)       | face-api.js (new)     |
+| -------------- | -------------------- | --------------------- |
+| **Cost**       | Paid after credits   | Free forever          |
+| **API Key**    | Required             | None                  |
+| **Limits**     | Credit-based         | Unlimited             |
+| **Processing** | Server-side          | Client-side (browser) |
+| **Privacy**    | Image sent to server | Image stays local     |
 
 ---
 
 ## Quick Start
 
-### Docker (Recommended)
+### Docker (One Command)
 
 ```bash
 docker-compose up -d
 ```
 
-### Manual
+Open [http://localhost:3000](http://localhost:3000)
+
+### Manual Setup
+
+**Backend:**
 
 ```bash
 git clone https://github.com/Israq/Face-recognition-backend.git
@@ -43,6 +64,15 @@ cd Face-recognition-backend
 npm install
 # Create .env with DATABASE_URL and PORT=3001
 node server.js
+```
+
+**Frontend:**
+
+```bash
+git clone https://github.com/Israq/Face-recontion-front-end.git
+cd Face-recontion-front-end
+npm install
+npm start
 ```
 
 ---
@@ -71,44 +101,81 @@ PORT=3001
 
 ---
 
+## How It Works
+
+1. **Register, Login, or Guest** — JWT token stored in browser. Click "Try as Guest" for instant demo access without registration.
+2. **Paste Image URL** — Any royalty-free image link from the web
+3. **Click Detect** — face-api.js models load from CDN, detect faces, draw bounding boxes with confidence scores
+4. **Entry Count** — Increments once per unique image URL
+5. **Try Demo** — Click "Try Demo Image" to test with a pre-loaded image instantly
+
+---
+
 ## Project Structure
 
 ```
-├── controllers/
-│   ├── signin.js        # JWT authentication
-│   ├── register.js      # User registration
-│   ├── image.js         # Entry count update
-│   ├── profile.js       # User profile
-│   └── setup.js         # Database table creation
-├── server.js            # Express server entry point
-├── Dockerfile
-├── .node-version
-└── package.json
+├── Face-recognition-backend/
+│   ├── controllers/
+│   │   ├── signin.js        # JWT auth
+│   │   ├── register.js      # User registration
+│   │   ├── image.js         # Entry count update
+│   │   ├── profile.js       # User profile
+│   │   └── setup.js         # Database setup
+│   ├── server.js            # Express server
+│   ├── Dockerfile
+│   └── .node-version
+├── Face-recontion-front-end/
+│   ├── src/
+│   │   ├── Components/
+│   │   │   ├── FaceRecognition/   # Face box overlay
+│   │   │   ├── ImageLinkForm/     # URL input + buttons
+│   │   │   ├── Navigation/        # Sign in/out nav
+│   │   │   ├── Rank/              # Entry count display
+│   │   │   ├── Register/          # Registration form
+│   │   │   ├── SignIn/            # Login form (with guest mode)
+│   │   │   └── Logo/              # App logo
+│   │   └── App.js                 # Face detection logic
+│   ├── Dockerfile
+│   └── .node-version
+└── docker-compose.yml
 ```
 
 ---
 
-## Deployment (Render)
+## Docker Commands
 
-| Config        | Value                  |
-| ------------- | ---------------------- |
-| Runtime       | Node                   |
-| Build Command | `yarn`                 |
-| Start Command | `node server.js`       |
-| Node Version  | 22                     |
-| Environment   | `DATABASE_URL`, `PORT` |
+```bash
+docker-compose up -d          # Start services
+docker-compose down           # Stop services
+docker-compose up --build -d  # Rebuild and start
+```
+
+---
+
+## Deployment
+
+Deployed on **Render** with auto-deploy from GitHub:
+
+| Service  | URL                                                   |
+| -------- | ----------------------------------------------------- |
+| Frontend | `https://face-recognition-frontend-cio2.onrender.com` |
+| Backend  | `https://face-recognition-backend-r8nm.onrender.com`  |
 
 ---
 
 ## Troubleshooting
 
-| Issue                     | Solution                                                          |
-| ------------------------- | ----------------------------------------------------------------- |
-| Register fails            | Use a new email; duplicate key means email exists                 |
-| Database connection error | Use external URL locally, internal URL on Render                  |
-| Pool timeout              | Added `pool: { min: 0, max: 3 }` in knex config                   |
-| Port already in use       | Stop other Node processes or change PORT in .env                  |
-| SSL error                 | Use `ssl: { rejectUnauthorized: false }` for external connections |
+| Issue                     | Solution                                                   |
+| ------------------------- | ---------------------------------------------------------- |
+| Register fails            | Database may be asleep; try again in 30 seconds            |
+| Wrong password            | Red alert appears with error message                       |
+| Guest login fails         | Ensure guest account exists on backend                     |
+| CORS errors               | Backend image proxy (`/proxy-image`) handles external URLs |
+| No face detected          | Try a different image; check browser console for errors    |
+| Token expired             | Auto-redirects to login on next refresh                    |
+| Models not loading        | CDN may be slow; loads from jsdelivr automatically         |
+| Port conflict             | Backend uses 3001, frontend uses 3000; Docker maps 80→3000 |
+| Database connection error | Supabase free tier has no expiry; check DATABASE_URL       |
 
 ---
 
